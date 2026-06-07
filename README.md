@@ -246,7 +246,7 @@ Two outputs: `PASTE_READY.txt` (exact char count, paste to venue) + `REBUTTAL_DR
 
 ```
 /paper-slides "paper/"     # → Beamer PDF + PPTX + speaker notes + Q&A prep
-/paper-poster "paper/"     # → A0/A1 poster PDF + editable PPTX + SVG
+/paper-poster-html "paper/" # → measurement-gated HTML/CSS poster → print-ready PDF
 ```
 
 > *💡 From idea to paper to podium — one toolchain. 🌱*
@@ -255,6 +255,7 @@ Two outputs: `PASTE_READY.txt` (exact char count, paste to venue) + `REBUTTAL_DR
 
 ## 2. 📢 What's New
 
+- **2026-06-07** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🖼️ **[`/paper-poster-html`](skills/paper-poster-html/SKILL.md) — new DEFAULT poster pipeline (skill #79); LaTeX `/paper-poster` retired to a redirect stub.** Builds the poster as a single HTML/CSS file on the venue's exact print canvas and iterates by *measuring, not eyeballing*: hard gates (column-balance spread < 5 px, two-hue design-token discipline, real-paper-figure provenance manifest, figure-area bands) must PASS before any reviewer sees the poster; a closed fix vocabulary (token / component / rebalance / asset / canvas) structurally kills the cosmetic patch-loop; a fresh cross-model review acquits content fidelity (claim→evidence audit + final print-readiness pass). Ships 3 templates + a catalogued component library (incl. density components: equation anatomy, flow-strip, duo figures, derived-Δ tables, claim pills) and 6 venue token packs. Core gate machinery adapted from [posterly](https://github.com/Chenruishuo/posterly) (MIT, by [@Chenruishuo](https://github.com/Chenruishuo)) — ARIS adds the style/asset gates, the density system, and the cross-model loop. ⚠️ `/paper-poster` now redirects to `/paper-poster-html`; the legacy LaTeX pipeline remains only in git history.
 - **2026-05-31** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🤝 **Community spotlight — two tools worth a look.** [**Claude Fleet**](https://github.com/tianyilt/claude-fleet) ([@tianyilt](https://github.com/tianyilt)) — a local read-only dashboard to triage / Focus / full-text-search across many concurrent **Claude Code + Codex** windows. [**posterly**](https://github.com/Chenruishuo/posterly) ([@Chenruishuo](https://github.com/Chenruishuo)) — a Claude Code skill that builds academic conference posters as a single HTML/CSS file → print-ready PDF via headless Chromium (no LaTeX). Both indexed under [Awesome Community](#awesome-community-skills). 🌟 if they help you.
 - **2026-05-31** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🛰 **Fourth reviewer backend: Gemini via Antigravity CLI** ([#267](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/267) by [@ZGJY95](https://github.com/ZGJY95)). `— reviewer: agy` routes review through the Antigravity CLI for users without Codex MCP / Oracle — **fail-closed on the cross-model invariant** (recovers + verifies the real Gemini-family model, refuses non-Gemini, binds the recovered transcript to the call via a user-event nonce). Wired into [`reviewer-routing.md`](skills/shared-references/reviewer-routing.md).
 - **2026-05-29** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) ⚙️ **ultracode-native convention layer — fan out for breadth on any runtime tier, keep the cross-model jury sacred**. Three new [`shared-references`](skills/shared-references/) docs decouple *breadth* from *verdict*: [`fan-out-pattern.md`](skills/shared-references/fan-out-pattern.md) (skills generate candidates across same-family Claude subagents — Tier-1 Workflow / Tier-2 Agent / Tier-3 sequential — all ending in the *identical* cross-model jury), [`acceptance-gate.md`](skills/shared-references/acceptance-gate.md) ("a loop can DRIVE, it cannot ACQUIT" — self-judge execution-completeness, never quality/correctness), and [`external-cadence.md`](skills/shared-references/external-cadence.md) (`/loop` & `CronCreate` are fire-control, never a jury). Wired into `/idea-creator`, `/research-lit`, `/proof-checker`, `/kill-argument` (fan-out) plus 16 skills (cadence fence/affordance). Also stripped 48 vestigial `Agent` grants (least-privilege + a drift-check guard), fixed `/idea-creator`'s same-family idea pre-filter, and reconciled an `/auto-review-loop` `OR`→`AND` stop-condition inconsistency. **Non-ultracode users benefit immediately** — fan-out degrades to sequential with the same final jury.
@@ -505,12 +506,12 @@ See [full setup guide](#setup) for details and [alternative model combinations](
 
 ## 4. ✨ Features
 
-ARIS chains **78 composable skills** across the whole research lifecycle — literature & novelty → idea discovery → GPU experiments → autonomous review loop → paper writing → peer review — with **cross-model adversarial review** (Claude executes · GPT-5.5 xhigh reviews · optional **GPT-5.5 Pro** via Oracle), anti-hallucination DBLP/CrossRef citations, a persistent **Research Wiki**, flexible model backends, human-in-the-loop checkpoints, and optional Feishu / Zotero / Obsidian / GPU integrations.
+ARIS chains **79 composable skills** across the whole research lifecycle — literature & novelty → idea discovery → GPU experiments → autonomous review loop → paper writing → peer review — with **cross-model adversarial review** (Claude executes · GPT-5.5 xhigh reviews · optional **GPT-5.5 Pro** via Oracle), anti-hallucination DBLP/CrossRef citations, a persistent **Research Wiki**, flexible model backends, human-in-the-loop checkpoints, and optional Feishu / Zotero / Obsidian / GPU integrations.
 
 <details>
 <summary><b>Full feature list</b></summary>
 
-- 📊 **78 composable skills** — mix and match, or chain into full pipelines (`/idea-discovery`, `/auto-review-loop`, `/paper-writing`, `/research-pipeline`). See [full catalog →](docs/SKILLS_CATALOG.md)
+- 📊 **79 composable skills** — mix and match, or chain into full pipelines (`/idea-discovery`, `/auto-review-loop`, `/paper-writing`, `/research-pipeline`). See [full catalog →](docs/SKILLS_CATALOG.md)
 - 🔍 **Literature & novelty** — multi-source paper search (**[Zotero](docs/integrations/ZOTERO.md)** + **[Obsidian](docs/integrations/OBSIDIAN.md)** + **local PDFs** + arXiv/Scholar) + cross-model novelty verification
 - 💡 **Idea discovery** — literature survey → brainstorm 8-12 ideas → novelty check → GPU pilot experiments → ranked report
 - 🔄 **Auto review loop** — 4-round autonomous review, 5/10 → 7.5/10 overnight with 20+ GPU experiments
@@ -608,7 +609,7 @@ Domain-specific skills and external projects contributed by the community. PRs w
 | 🧭 [`research-refine-pipeline`](skills/research-refine-pipeline/SKILL.md) | General | One-shot chain: `/research-refine` → `/experiment-plan` for method refinement plus experiment planning | Yes |
 | 📝 [`grant-proposal`](skills/grant-proposal/SKILL.md) | General | Grant proposal drafting (KAKENHI/NSF/NSFC/ERC/DFG/SNSF/ARC/NWO). Chains `/research-lit` → `/novelty-check` → `/research-review` → `/paper-illustration` | Yes |
 | 🎤 [`paper-slides`](skills/paper-slides/SKILL.md) | General | Conference talk slides (beamer → PDF + PPTX) with speaker notes, full talk script + Q&A prep. Auto slide count from talk type | Yes |
-| 🖼️ [`paper-poster`](skills/paper-poster/SKILL.md) | General | Conference poster (article + tcbposter → A0/A1 PDF + component PPTX + SVG). Venue-specific colors, visual review loop, Codex MCP review | Yes |
+| 🖼️ [`paper-poster`](skills/paper-poster/SKILL.md) | General | DEPRECATED — redirect stub to the core [`/paper-poster-html`](skills/paper-poster-html/SKILL.md) (measurement-gated HTML/CSS pipeline); the legacy LaTeX implementation lives in git history | — |
 | 📐 [`proof-writer`](skills/proof-writer/SKILL.md) | ML Theory | Rigorous theorem/lemma proof drafting — feasibility triage, dependency maps, honest blockage reports | No |
 | 📡 [`comm-lit-review`](skills/comm-lit-review/SKILL.md) | Communications / Wireless | Domain-specific literature review — IEEE/ACM/ScienceDirect priority, venue tiering, PHY/MAC/transport/NTN taxonomy | No |
 | 🏗️ [`dse-loop`](skills/dse-loop/SKILL.md) | Architecture / EDA | Autonomous design space exploration — iteratively run, analyze, and tune parameters (gem5, Yosys, etc.) | No |
@@ -638,7 +639,7 @@ Domain-specific skills and external projects contributed by the community. PRs w
 | 📚 [paper-to-course](https://github.com/KaguraTart/paper-to-course) | Education | Convert research papers (PDF/LaTeX) into interactive six-module HTML courses with formula breakdowns, literature timelines, quizzes, and glossary tooltips — single bundled file, no server needed |
 | 🤖 [MiniMax-AI/cli](https://github.com/MiniMax-AI/cli) | General | Official MiniMax CLI — text, image, video, speech, and music generation + web search. `skill/SKILL.md` follows the agentskills.io standard. Drop-in companion for the Alt B (MiniMax reviewer) setup |
 | 🔎 [deep-research-skills](https://github.com/Weizhena/deep-research-skills) | General / Web Search | Modular web-search strategy bundle — per-source playbooks for Stack Overflow, GitHub Issues / error-string debugging, Chinese tech communities (CSDN / 掘金 / 知乎 / V2EX / Tencent + Aliyun cloud forums), and general web (Reddit / HN / Dev.to / Medium). Complements ARIS's academic-paper-focused [`/research-lit`](skills/research-lit/SKILL.md) stack with **non-academic** sources useful for debugging, version-compat tracking, and Chinese-language tech search. By [@Weizhena](https://github.com/Weizhena) |
-| 🖼️ [posterly](https://github.com/Chenruishuo/posterly) | General / Posters | Academic conference posters as a single **HTML/CSS file → print-ready PDF** via headless Chromium (no LaTeX). A Claude Code skill — a lightweight, web-native alternative to `/paper-poster`. By [@Chenruishuo](https://github.com/Chenruishuo) |
+| 🖼️ [posterly](https://github.com/Chenruishuo/posterly) | General / Posters | Academic conference posters as a single **HTML/CSS file → print-ready PDF** via headless Chromium (no LaTeX). A Claude Code skill — its gate machinery now powers ARIS’s default `/paper-poster-html`. By [@Chenruishuo](https://github.com/Chenruishuo) |
 | 🛰️ [Claude Fleet](https://github.com/tianyilt/claude-fleet) | Dashboard / DevEx | Local **read-only** dashboard for many concurrent Claude Code / Codex windows — triage (working / waiting-on-you / done), one-click Focus, ~50ms full-text search across transcripts, skill/memory analytics. By [@tianyilt](https://github.com/tianyilt) |
 
 </details>
@@ -942,7 +943,7 @@ Already have an experiment plan (from Workflow 1 or your own)? `/experiment-brid
 
 </details>
 
-**Skills involved:** `paper-plan` + `paper-figure` + `paper-write` + `paper-compile` + `auto-paper-improvement-loop` + (post-acceptance) `paper-poster` + `paper-slides`
+**Skills involved:** `paper-plan` + `paper-figure` + `paper-write` + `paper-compile` + `auto-paper-improvement-loop` + (post-acceptance) `paper-poster-html` + `paper-slides`
 
 > **One-command shortcut:** `/paper-writing "NARRATIVE_REPORT.md"` runs this entire workflow automatically.
 
@@ -1092,7 +1093,7 @@ Port a polished paper from venue A → B under **hard, non-overridable guardrail
 
 ### Workflow 6: Conference Talk Pipeline 🎤 (paper → slides → polish → audits)
 
-`/paper-talk` turns an accepted paper into a talk: outline → `/paper-slides` (Beamer + PPTX + speaker notes + Q&A) → `/slides-polish` (per-page Codex visual pass) → optional conference-ready audit gate. Sister to `/paper-writing` / `/paper-poster`. **Full flow → [docs/RESUBMIT_AND_TALK.md](docs/RESUBMIT_AND_TALK.md)**
+`/paper-talk` turns an accepted paper into a talk: outline → `/paper-slides` (Beamer + PPTX + speaker notes + Q&A) → `/slides-polish` (per-page Codex visual pass) → optional conference-ready audit gate. Sister to `/paper-writing` / `/paper-poster-html`. **Full flow → [docs/RESUBMIT_AND_TALK.md](docs/RESUBMIT_AND_TALK.md)**
 
 <a id="-research-wiki--persistent-research-memory"></a>
 
@@ -1280,7 +1281,7 @@ Add `— reviewer: oracle-pro` to any reviewer-aware skill (`/proof-checker`, `/
 
 ## 9. 🧰 Skills Catalog
 
-ARIS ships **78+ skills** across literature, ideation, experiments, audit,
+ARIS ships **79+ skills** across literature, ideation, experiments, audit,
 writing, talks, patents, and meta-utilities. The full catalog (with role,
 category, and requirements per skill) lives in
 **[`docs/SKILLS_CATALOG.md`](docs/SKILLS_CATALOG.md)** to keep this README

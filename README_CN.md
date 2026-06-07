@@ -228,7 +228,7 @@ ARIS 读论文 → 找弱点 → 克隆代码 → 针对*那些*弱点用*那套
 
 ```
 /paper-slides "paper/"     # → Beamer PDF + PPTX + 演讲稿 + Q&A 预案
-/paper-poster "paper/"     # → A0/A1 海报 PDF + 可编辑 PPTX + SVG
+/paper-poster-html "paper/" # → 测量门控 HTML/CSS 海报 → 可印刷 PDF
 ```
 
 > *💡 从 idea 到论文到讲台到 rebuttal——一条工具链。🌱*
@@ -238,6 +238,7 @@ ARIS 读论文 → 找弱点 → 克隆代码 → 针对*那些*弱点用*那套
 
 ## 2. 📢 最近更新
 
+- **2026-06-07** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🖼️ **[`/paper-poster-html`](skills/paper-poster-html/SKILL.md) —— 新的默认海报流水线(skill #79);LaTeX 版 `/paper-poster` 退役为重定向 stub。** 海报即单个 HTML/CSS 文件,按会议官方印刷画布迭代,**靠测量不靠目测**:硬性 gate(列底对齐 spread < 5 px、双色相 design-token 纪律、论文原图 provenance manifest、图面积区间)全 PASS 之后 reviewer 才能看到海报;封闭修复词表(token / 组件 / 内容再平衡 / 素材 / 画布)从结构上杜绝化妆式 patch 死循环;内容保真由 fresh 跨模型审裁决(claim→evidence 审计 + 最终印刷就绪审)。内置 3 套模板 + 组件库(含信息密度组件:公式逐项解剖、flow-strip、双图合卡、derived-Δ 表、claim pills)和 6 个会议配色 token 包。门控机制改造自 [posterly](https://github.com/Chenruishuo/posterly)(MIT,by [@Chenruishuo](https://github.com/Chenruishuo))——ARIS 增加风格/素材 gate、密度体系与跨模型审循环。⚠️ `/paper-poster` 现在重定向到 `/paper-poster-html`;旧 LaTeX 流水线仅存于 git history。
 - **2026-05-31** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🤝 **社区好物 —— 两个值得一看的工具。** [**Claude Fleet**](https://github.com/tianyilt/claude-fleet)（[@tianyilt](https://github.com/tianyilt)）—— 本地只读看板，同时 triage / Focus / 全文搜你开的一堆 **Claude Code + Codex** 窗口。[**posterly**](https://github.com/Chenruishuo/posterly)（[@Chenruishuo](https://github.com/Chenruishuo)）—— 一个 Claude Code skill，把学术会议海报做成单个 HTML/CSS 文件 → 可印刷 PDF（headless Chromium，无需 LaTeX）。两个都收录在 [Awesome 社区](#awesome-community-skills)。觉得有用 🌟 一下。
 - **2026-05-29** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) ⚙️ **ultracode 原生约定层 —— 任意运行时档位都能 fan out 拓宽广度，跨模型裁判席始终神圣不可侵犯**。三个新 [`shared-references`](skills/shared-references/) 文档把*广度*和*裁决*解耦：[`fan-out-pattern.md`](skills/shared-references/fan-out-pattern.md)（skill 用同家族 Claude subagent 生成候选 —— Tier-1 Workflow / Tier-2 Agent / Tier-3 顺序 —— 全部汇入*同一个*跨模型裁判席），[`acceptance-gate.md`](skills/shared-references/acceptance-gate.md)（"loop 可以 DRIVE，不能 ACQUIT" —— 可自判执行完成度，绝不可自判质量/正确性），[`external-cadence.md`](skills/shared-references/external-cadence.md)（`/loop` 和 `CronCreate` 只是 fire-control，绝非裁判席）。已接入 `/idea-creator`、`/research-lit`、`/proof-checker`、`/kill-argument`（fan-out）+ 16 个 skill（cadence fence/affordance）。另外：清理 48 个 vestigial `Agent` grant（最小权限 + drift 守卫），修掉 `/idea-creator` 的同家族 idea 预筛，并校正 `/auto-review-loop` 的 `OR`→`AND` 停止条件矛盾。**没有 ultracode 的用户也立刻受益** —— fan-out 退化成顺序执行，最终裁判席不变。
 - **2026-05-28** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 📝 **首篇 blog 上线**：[A Survey on Continuous DLM (2026 H1, 6 papers)](https://wanshuiyin.github.io/ARIS-in-AI-Offer/blogs/continuous_dlm_representation_perspective.html) —— Ruofeng Yang (SJTU) 写的 long-form 双语技术综述，全程通过 ARIS-in-AI-Offer workflow 完成（Claude Opus 4.7 + Codex GPT-5.5 xhigh + Gemini auto-gemini-3 跨模型讨论）。对比 ELF / 字节 Cola-DLM / Flow-Matching 系列：discrete-DLM 的问题、"known-unknown" 连续空间思路、训练 pipeline、架构 / 参数 / shapes、推理 grids + Tab 6/7 数值结果、去噪轨迹、对比 Cola-DLM 的 Field Landscape。单文件自含 HTML（1.7 MB，无 build）—— 展示 `/render-html` toolchain 能产出的 long-form 研究分析深度。
@@ -470,12 +471,12 @@ cd Auto-claude-code-research-in-sleep && ls skills/ | xargs -I{} rm -rf ~/.claud
 
 ## 4. ✨ 功能亮点
 
-ARIS 用 **78 个可组合 skill** 覆盖科研全生命周期——文献查新 → idea 发现 → GPU 实验 → 自动 review 循环 → 论文写作 → peer review——配合**跨模型对抗审**（Claude 执行 · GPT-5.5 xhigh 审 · 可选 **GPT-5.5 Pro** via Oracle）、DBLP/CrossRef 反幻觉引用、持久化 **Research Wiki**、灵活模型后端、human-in-the-loop 检查点，以及可选的飞书 / Zotero / Obsidian / GPU 集成。
+ARIS 用 **79 个可组合 skill** 覆盖科研全生命周期——文献查新 → idea 发现 → GPU 实验 → 自动 review 循环 → 论文写作 → peer review——配合**跨模型对抗审**（Claude 执行 · GPT-5.5 xhigh 审 · 可选 **GPT-5.5 Pro** via Oracle）、DBLP/CrossRef 反幻觉引用、持久化 **Research Wiki**、灵活模型后端、human-in-the-loop 检查点，以及可选的飞书 / Zotero / Obsidian / GPU 集成。
 
 <details>
 <summary><b>完整功能清单</b></summary>
 
-- 📊 **78 个可组合 skill** — 自由混搭，或串联为完整流水线（`/idea-discovery`、`/auto-review-loop`、`/paper-writing`、`/research-pipeline`）。[完整目录 →](docs/SKILLS_CATALOG.md)
+- 📊 **79 个可组合 skill** — 自由混搭，或串联为完整流水线（`/idea-discovery`、`/auto-review-loop`、`/paper-writing`、`/research-pipeline`）。[完整目录 →](docs/SKILLS_CATALOG.md)
 - 🔍 **文献 & 查新** — 多源论文搜索（**[Zotero](docs/integrations/ZOTERO_CN.md)** + **[Obsidian](docs/integrations/OBSIDIAN_CN.md)** + **本地 PDF** + arXiv/Scholar）+ 跨模型查新验证
 - 💡 **Idea 发现** — 文献调研 → 头脑风暴 8-12 个 idea → 查新 → GPU pilot 实验 → 排名报告
 - 🔄 **自动 review 循环** — 4 轮自主审稿，一夜从 5/10 提升到 7.5/10，自动跑 20+ 组 GPU 实验
@@ -577,7 +578,7 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 | 📡 [`comm-lit-review`](skills/comm-lit-review/SKILL.md) | 通信 / 无线 | 通信领域文献检索——IEEE/ACM 优先、venue 分层、PHY/MAC/NTN 分类 | 否 |
 | 🏗️ [`dse-loop`](skills/dse-loop/SKILL.md) | 体系结构 / EDA | 自动设计空间探索——迭代调参（gem5、Yosys 等） | 否 |
 | 🤖 [`idea-discovery-robot`](skills/idea-discovery-robot/SKILL.md) | 机器人 / 具身智能 | 工作流 1 适配版——按 embodiment、sim2real、安全约束筛选 idea | 是 |
-| 🖼️ [`paper-poster`](skills/paper-poster/SKILL.md) | 通用 | 会议海报（article + tcbposter → A0/A1 PDF + 组件化 PPTX + SVG），会议配色、视觉审稿循环、Codex MCP 评审 | 是 |
+| 🖼️ [`paper-poster`](skills/paper-poster/SKILL.md) | 通用 | 已弃用——重定向 stub,指向核心 [`/paper-poster-html`](skills/paper-poster-html/SKILL.md)(测量门控 HTML/CSS 流水线);旧 LaTeX 实现仅存于 git history | — |
 | 📐 [`mermaid-diagram`](skills/mermaid-diagram/SKILL.md) | 通用 | Mermaid 图表（20+ 种类型）——`paper-illustration` 的免费替代，无需 API key | 否 |
 | 🎨 [`paper-illustration`](skills/paper-illustration/SKILL.md) | 通用 | AI 生成架构图（Gemini），基于 [PaperBanana](https://github.com/dwzhu-pku/PaperBanana)，集成到工作流 3 | 否 |
 | 🤖 [`skills-codex`](skills/skills-codex/) | 通用 | 主线科研技能的 Codex CLI 同步包（含 `result-to-claim`、`rebuttal`、`ablation-planner`）+ `shared-references/` 支持目录 | — |
@@ -599,7 +600,7 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 | 🎛️ [auto-hparam-tuning](https://github.com/zxh0916/auto-hparam-tuning) | 通用 | 自动超参调优——AI agent 读项目、规划策略、跑实验、分析 TensorBoard、从结果中学习。基于 Hydra |
 | 📚 [paper-to-course](https://github.com/KaguraTart/paper-to-course) | 教育 | 论文转交互式课程——PDF/LaTeX 论文自动转为六模块 HTML 课程，含公式拆解、文献时间线、测验、术语提示。单文件打包，无需服务器 |
 | 🔎 [deep-research-skills](https://github.com/Weizhena/deep-research-skills) | 通用 / Web 搜索 | 模块化 web 搜索策略包——按源拆分独立模块：Stack Overflow / GitHub Issues 错误串调试 / 中文技术社区（CSDN / 掘金 / 知乎 / V2EX / 腾讯阿里云社区）/ 通用 Web（Reddit / HN / Dev.to / Medium）。补 ARIS [`/research-lit`](skills/research-lit/SKILL.md) 以学术源为主的栈，给**非学术**场景（调试、版本兼容追踪、中文技术检索）提供查询策略。by [@Weizhena](https://github.com/Weizhena) |
-| 🖼️ [posterly](https://github.com/Chenruishuo/posterly) | 通用 / 海报 | 把学术会议海报做成**单个 HTML/CSS 文件 → 可印刷 PDF**（headless Chromium，无需 LaTeX）。一个 Claude Code skill——`/paper-poster` 的轻量、Web 原生替代。by [@Chenruishuo](https://github.com/Chenruishuo) |
+| 🖼️ [posterly](https://github.com/Chenruishuo/posterly) | 通用 / 海报 | 把学术会议海报做成**单个 HTML/CSS 文件 → 可印刷 PDF**（headless Chromium，无需 LaTeX）。一个 Claude Code skill——其门控机制现已成为 ARIS 默认 `/paper-poster-html` 的核心。by [@Chenruishuo](https://github.com/Chenruishuo) |
 | 🛰️ [Claude Fleet](https://github.com/tianyilt/claude-fleet) | 看板 / DevEx | 本地**只读**看板，同时盯住一堆并行的 Claude Code / Codex 窗口——triage（干活 / 等你 / 跑完）、一键 Focus、~50ms 全文搜 transcript、skill/memory 用量分析。by [@tianyilt](https://github.com/tianyilt) |
 
 </details>
@@ -820,7 +821,7 @@ NARRATIVE_REPORT.md ──► /paper-plan ──► /paper-figure ──► /pap
 
 </details>
 
-**涉及 Skills：** `paper-plan` + `paper-figure` + `paper-write` + `paper-compile` + `auto-paper-improvement-loop` +（投稿后）`paper-poster` + `paper-slides`
+**涉及 Skills：** `paper-plan` + `paper-figure` + `paper-write` + `paper-compile` + `auto-paper-improvement-loop` +（投稿后）`paper-poster-html` + `paper-slides`
 
 > **一键调用：** `/paper-writing "NARRATIVE_REPORT.md"` 自动跑完整个工作流 3。
 
@@ -968,7 +969,7 @@ NARRATIVE_REPORT.md ──► /paper-plan ──► /paper-figure ──► /pap
 
 ### 工作流 6:Conference Talk Pipeline 🎤(论文 → slides → polish → audits)
 
-`/paper-talk` 把录用论文做成报告:提纲 → `/paper-slides`(Beamer + PPTX + 备注 + Q&A)→ `/slides-polish`(逐页 Codex 视觉审)→ 可选 conference-ready 审计门。是 `/paper-writing` / `/paper-poster` 的姊妹流程。**完整流程 → [docs/RESUBMIT_AND_TALK_CN.md](docs/RESUBMIT_AND_TALK_CN.md)**
+`/paper-talk` 把录用论文做成报告:提纲 → `/paper-slides`(Beamer + PPTX + 备注 + Q&A)→ `/slides-polish`(逐页 Codex 视觉审)→ 可选 conference-ready 审计门。是 `/paper-writing` / `/paper-poster-html` 的姊妹流程。**完整流程 → [docs/RESUBMIT_AND_TALK_CN.md](docs/RESUBMIT_AND_TALK_CN.md)**
 
 <a id="-research-wiki--persistent-research-memory"></a>
 
@@ -1113,7 +1114,7 @@ claude   # hooks 立即生效
 
 ## 9. 🧰 Skills Catalog
 
-ARIS 现有 **78+ 个 skill**，覆盖文献调研、idea 生成、实验、审计、论文写作、
+ARIS 现有 **79+ 个 skill**，覆盖文献调研、idea 生成、实验、审计、论文写作、
 演讲、专利、meta 工具等。完整目录（每个 skill 含 role / category /
 依赖）在
 **[`docs/SKILLS_CATALOG.md`](docs/SKILLS_CATALOG.md)**，独立成文以保持
